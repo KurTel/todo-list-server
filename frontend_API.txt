@@ -1,0 +1,207 @@
+// ==================== КОНСТАНТЫ ====================
+const BASE_URL = 'http://localhost:3000';
+
+// ==================== РАБОТА СО СПИСКАМИ (LISTS) ====================
+
+// 1. ПОЛУЧИТЬ ВСЕ СПИСКИ (GET)
+function getAllLists() {
+    fetch(`${BASE_URL}/lists`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Ошибка получения списков');
+        }
+        return response.json();
+    })
+    .then(lists => {
+        console.log('Все списки:', lists);
+        return lists;
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+    });
+}
+
+// 2. СОЗДАТЬ НОВЫЙ СПИСОК (POST)
+function createList(listName) {
+    fetch(`${BASE_URL}/lists`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name: listName
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Ошибка создания списка');
+        }
+        return response.json();
+    })
+    .then(newList => {
+        console.log('Создан новый список:', newList);
+        return newList;
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+    });
+}
+
+// 3. ОБНОВИТЬ СПИСОК (PUT)
+function updateList(listId, newName) {
+    fetch(`${BASE_URL}/lists/${listId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name: newName
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Ошибка обновления списка');
+        }
+        return response.json();
+    })
+    .then(updatedList => {
+        console.log('Обновленный список:', updatedList);
+        return updatedList;
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+    });
+}
+
+// 4. УДАЛИТЬ СПИСОК (DELETE)
+function deleteList(listId) {
+    fetch(`${BASE_URL}/lists/${listId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Ошибка удаления списка');
+        }
+        return response.json();
+    })
+    .then(result => {
+        console.log('Список удален:', result);
+        return result;
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+    });
+}
+
+// ==================== РАБОТА С ЗАДАЧАМИ (TODOS) ====================
+
+// 5. ДОБАВИТЬ ЗАДАЧУ В СПИСОК (POST)
+function addTodo(listId, text, completed = false) {
+    fetch(`${BASE_URL}/lists/${listId}/todos`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            text: text,
+            completed: completed
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Ошибка добавления задачи');
+        }
+        return response.json();
+    })
+    .then(newTodo => {
+        console.log('Добавлена задача:', newTodo);
+        return newTodo;
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+    });
+}
+
+// 6. ОБНОВИТЬ ЗАДАЧУ (PUT) (updates - объект todo с обновленными полями)
+function updateTodo(listId, todoId, updates) {
+    fetch(`${BASE_URL}/lists/${listId}/todos/${todoId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updates)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Ошибка обновления задачи');
+        }
+        return response.json();
+    })
+    .then(updatedTodo => {
+        console.log('Обновленная задача:', updatedTodo);
+        return updatedTodo;
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+    });
+}
+
+// 7. УДАЛИТЬ ЗАДАЧУ (DELETE)
+function deleteTodo(listId, todoId) {
+    fetch(`${BASE_URL}/lists/${listId}/todos/${todoId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Ошибка удаления задачи');
+        }
+        return response.json();
+    })
+    .then(result => {
+        console.log('Задача удалена:', result);
+        return result;
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+    });
+}
+
+
+// ==================== СПРАВОЧНИК API ====================
+/*
+📋 СПРАВОЧНИК ДЛЯ РАЗРАБОТЧИКА:
+
+BASE URL: http://localhost:3000
+
+📝 РАБОТА СО СПИСКАМИ:
+- GET    /lists           - получить все списки
+- POST   /lists           - создать список (body: {name: "название"})
+- PUT    /lists/:id       - изменить список (body: {name: "новое название"})
+- DELETE /lists/:id       - удалить список
+
+✅ РАБОТА С ЗАДАЧАМИ:
+- POST   /lists/:listId/todos       - добавить задачу (body: {text: "текст", completed: false})
+- PUT    /lists/:listId/todos/:todoId - изменить задачу (body: {text: "текст", completed: true})
+- DELETE /lists/:listId/todos/:todoId - удалить задачу
+
+🔄 КАК ИСПОЛЬЗОВАТЬ:
+1. Сначала создайте список с помощью createList()
+2. Получите ID списка из ответа сервера
+3. Используйте этот ID для работы с задачами в этом списке
+4. Для задач также получайте ID из ответов сервера
+
+💡 ПРИМЕЧАНИЕ:
+В реальном приложении нужно дожидаться ответа от сервера
+перед выполнением следующих операций!
+*/
