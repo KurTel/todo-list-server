@@ -78,6 +78,29 @@ function updateList(listId, newName) {
     });
 }
 
+// 3. ПОЛУЧИТЬ СПИСОК (GET)
+function updateList(listId) {
+    fetch(`${BASE_URL}/lists/${listId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Ошибка получения списка');
+        }
+        return response.json();
+    })
+    .then(list => {
+        console.log('Полученный список:', list);
+        return list;
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+    });
+}
+
 // 4. УДАЛИТЬ СПИСОК (DELETE)
 function deleteList(listId) {
     fetch(`${BASE_URL}/lists/${listId}`, {

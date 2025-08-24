@@ -28,7 +28,7 @@ async function initData() {
 // Работа со списками
 app.get('/lists', async (req, res) => {
     await db.read();
-    res.json(db.data.lists);
+    res.json(db.data.lists.map((list) => ({ id: list.id, name: list.name })));
 });
 
 app.post('/lists', async (req, res) => {
@@ -42,7 +42,17 @@ app.post('/lists', async (req, res) => {
     
     db.data.lists.push(newList);
     await db.write();
-    res.json(newList);
+    res.json(newList.map((list) => ({ id: list.id, name: list.name })));
+});
+
+app.get('/lists/:id', async (req, res) => {
+    await db.read();
+    
+    const list = db.data.lists.find(l => l.id === req.params.id);
+    if (!list) return res.status(404).json({ error: 'List not found' });
+    
+    await db.write();
+    res.json(list);
 });
 
 app.put('/lists/:id', async (req, res) => {
